@@ -7,6 +7,26 @@
         <p>
             Hier komt een testblog om Symfony en Tabler te oefenen.
         </p>
+        <div id="editor-container"></div>
+        <button id="quillTest" onclick="testQuill()">Quill</button>
     </div>
 </div>
+{% endblock %}
+{% block javascripts %}
+    var quill = new Quill('#editor-container', {
+    modules: {
+        toolbar: [
+        [{ header: [1, 2, false] }],
+        ['bold', 'italic', 'underline'],
+        ['image', 'code-block']
+        ]
+    },
+    placeholder: 'Compose an epic...',
+    theme: 'snow'  // or 'bubble'
+    });
+
+    function testQuill()
+    {
+        console.log(quill.getText());
+    }
 {% endblock %}
