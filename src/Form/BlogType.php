@@ -6,16 +6,24 @@ use App\Entity\Post;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use FOS\CKEditorBundle\Form\Type\CKEditorType;
 
 class BlogType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('title')
-            ->add('content')
-            ->add('votes')
-            ->add('user')
+            ->add('title', TextType::class)
+            ->add('content', CKEditorType::class, [
+            	'config' => [
+            		'toolbar' => 'basic'
+				]
+			])
+			->add('submit', SubmitType::class, [
+				'attr' => ['class' => 'btn btn-primary btn-block']
+			])
         ;
     }
 
