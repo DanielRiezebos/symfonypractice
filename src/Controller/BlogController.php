@@ -15,10 +15,10 @@ class BlogController extends Controller
 	 */
 	public function index()
 	{
-		foreach($this->getUser()->getPosts() as $post){
-			dump($post);
-		};
-		die;
+		return $this->render('blog/index.html.twig', [
+			'pageTitle' => 'Mijn Blogr_\'s',
+			'posts' => $this->getUser()->getPosts(),
+		]);
 	}
 
 	/**
@@ -42,10 +42,31 @@ class BlogController extends Controller
 				'success',
 				'Your blog has been published! :D'
 			);
+
+			return $this->redirect('/read/'.$newPost->getId());
 		}
 
-		return $this->render('blog/index.html.twig', [
+		return $this->render('blog/create.html.twig', [
 			'blogForm' => $blogForm->createView(),
 		]);
+	}
+
+	/**
+	 * @Route("/read/{id}", name="read")
+	 */
+	public function read(int $id)
+	{
+		$thePost = $this->getDoctrine()->getManager()->getRepository(Post::class)->find($id);
+		if ($thePost) {
+			return $this->render('blog/read.html.twig', [
+				'pageTitle' => $thePost->getTitle(),
+				'post' => $thePost,
+			]);
+		}
+		$this->addFlash(
+			'danger',
+			'Sorry, that blog was not found. :('
+		);
+		return $this->redirect('/myblogs');
 	}
 }
