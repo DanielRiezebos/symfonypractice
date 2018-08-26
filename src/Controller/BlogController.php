@@ -10,8 +10,16 @@ use App\Entity\Post;
 
 class BlogController extends Controller
 {
+
+	private $entityManager;
+
+	public function __construct()
+	{
+		#$this->entityManager = $this->getDoctrine()->getManager();
+	}
+
 	/**
-	 * @Route("/myblogs", name="myblogs")
+	 * @Route("/myblogs", name="listBlog")
 	 */
 	public function index()
 	{
@@ -22,7 +30,7 @@ class BlogController extends Controller
 	}
 
 	/**
-	 * @Route("/blog", name="blog")
+	 * @Route("/blog", name="createBlog")
 	 */
 	public function create(Request $request)
 	{
@@ -52,11 +60,12 @@ class BlogController extends Controller
 	}
 
 	/**
-	 * @Route("/read/{id}", name="read")
+	 * @Route("/read/{id}", name="readBlog")
 	 */
 	public function read(int $id)
 	{
-		$thePost = $this->getDoctrine()->getManager()->getRepository(Post::class)->find($id);
+		$entityManager = $this->getDoctrine()->getManager();
+		$thePost = $entityManager->getRepository(Post::class)->find($id);
 		if ($thePost) {
 			return $this->render('blog/read.html.twig', [
 				'pageTitle' => $thePost->getTitle(),
@@ -67,6 +76,26 @@ class BlogController extends Controller
 			'danger',
 			'Sorry, that blog was not found. :('
 		);
+		return $this->redirect('/myblogs');
+	}
+
+	/**
+	 * @Route("/blog/delete/{id}", name="deleteBlog")
+	 */
+	public function delete(int $id)
+	{
+		$entityManager = $this->getDoctrine()->getManager();
+		$postToDelete = $entityManager->getRepository(Post::class)->find($id);
+
+		if (!is_null($postToDelete)) {
+			$entityManager->remove($postToDelete);
+			$entityManager->flush();
+			$this->addFlash(
+				'danger',
+				'Blog entry has been deleted. RIP'
+			);
+		}
+
 		return $this->redirect('/myblogs');
 	}
 }

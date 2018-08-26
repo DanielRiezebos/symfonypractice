@@ -1,6 +1,16 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <div class="page-header">
+        <h1 class="page-title">
+            {% if pageTitle is defined %}
+                {{ pageTitle }}
+            {% endif %}
+        </h1>
+        <div class="page-options d-flex row">
+            <a href="/blog/delete/{{ post.id }}" class="btn btn-sm btn-outline-danger">Delete</a>
+        </div>
+    </div>
     <div class="row row-cards row-deck">
         <div class="card">
             <div class="card-body">

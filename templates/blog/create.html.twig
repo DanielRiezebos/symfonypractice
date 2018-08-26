@@ -1,6 +1,13 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <div class="page-header">
+        <h1 class="page-title">
+            {% if pageTitle is defined %}
+                {{ pageTitle }}
+            {% endif %}
+        </h1>
+    </div>
     <fieldset class="form-fieldset">
         {{ form_start(blogForm) }}
         <div class="form-group">
