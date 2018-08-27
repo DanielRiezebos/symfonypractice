@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Entity\Post;
 
 class HomeController extends Controller
 {
@@ -12,6 +13,8 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return $this->render('home/index.html.twig');
+    	$entityManager = $this->getDoctrine()->getManager();
+    	$newestPosts = $entityManager->getRepository(Post::class)->findBy([], ['timestamp' => 'DESC'], 5);
+        return $this->render('home/index.html.twig', ['newestPosts' => $newestPosts, 'pageTitle' => 'Nieuwste blogs:']);
     }
 }

@@ -42,6 +42,7 @@ class BlogController extends Controller
 			$newPost = $blogForm->getData();
 			$newPost->setUser($this->getUser());
 			$newPost->setVotes(1);
+			$newPost->setTimestamp(time());
 
 			$entityManager->persist($newPost);
 			$entityManager->flush();

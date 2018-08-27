@@ -37,6 +37,11 @@ class Post
      */
     private $votes;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $timestamp;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,6 +91,18 @@ class Post
     public function setVotes(int $votes): self
     {
         $this->votes = $votes;
+
+        return $this;
+    }
+
+    public function getTimestamp(): ?int
+    {
+        return $this->timestamp;
+    }
+
+    public function setTimestamp(int $timestamp): self
+    {
+        $this->timestamp = $timestamp;
 
         return $this;
     }
