@@ -22,7 +22,7 @@ security:
                 check_path: login
             logout:
                 path:   /logout
-                target: /login
+                target: /
             
                 
     
@@ -39,6 +39,6 @@ security:
     access_control:
         - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
         - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/, roles: ROLE_USER }
-        - { path: ^/first, roles: ROLE_USER }
-        - { path: ^/second, roles: ROLE_USER }
+        - { path: ^/, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/newBlog, roles: ROLE_USER }
+        - { path: ^/myblogs, roles: ROLE_USER }

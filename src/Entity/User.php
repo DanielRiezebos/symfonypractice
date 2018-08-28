@@ -44,10 +44,16 @@ class User implements UserInterface, \Serializable
      */
     private $posts;
 
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\VoteRecord", mappedBy="User")
+     */
+    private $voteRecords;
+
     public function __construct()
     {
         $this->isActive = true;
         $this->posts = new ArrayCollection();
+        $this->voteRecords = new ArrayCollection();
         // may not be needed, see section on salt below
         // $this->salt = md5(uniqid('', true));
     }
@@ -171,6 +177,37 @@ class User implements UserInterface, \Serializable
             // set the owning side to null (unless already changed)
             if ($post->getUser() === $this) {
                 $post->setUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VoteRecord[]
+     */
+    public function getVoteRecords(): Collection
+    {
+        return $this->voteRecords;
+    }
+
+    public function addVoteRecord(VoteRecord $voteRecord): self
+    {
+        if (!$this->voteRecords->contains($voteRecord)) {
+            $this->voteRecords[] = $voteRecord;
+            $voteRecord->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVoteRecord(VoteRecord $voteRecord): self
+    {
+        if ($this->voteRecords->contains($voteRecord)) {
+            $this->voteRecords->removeElement($voteRecord);
+            // set the owning side to null (unless already changed)
+            if ($voteRecord->getUser() === $this) {
+                $voteRecord->setUser(null);
             }
         }
 

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Form\BlogType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Post;
@@ -52,7 +53,7 @@ class BlogController extends Controller
 				'Your blog has been published! :D'
 			);
 
-			return $this->redirect('/read/'.$newPost->getId());
+			return $this->redirect('/read/' . $newPost->getId());
 		}
 
 		return $this->render('blog/create.html.twig', [
@@ -71,6 +72,7 @@ class BlogController extends Controller
 			return $this->render('blog/read.html.twig', [
 				'pageTitle' => $thePost->getTitle(),
 				'post' => $thePost,
+				'user' => $this->getUser()
 			]);
 		}
 		$this->addFlash(
@@ -86,7 +88,10 @@ class BlogController extends Controller
 	public function delete(int $id)
 	{
 		$entityManager = $this->getDoctrine()->getManager();
-		$postToDelete = $entityManager->getRepository(Post::class)->find($id);
+		$postToDelete = $entityManager->getRepository(Post::class)->findOneBy([
+			'user' => $this->getUser(),
+			'id' => $id
+		]);
 
 		if (!is_null($postToDelete)) {
 			$entityManager->remove($postToDelete);
@@ -98,5 +103,25 @@ class BlogController extends Controller
 		}
 
 		return $this->redirect('/myblogs');
+	}
+
+	/**
+	 * @Route("blog/vote/{id}/{direction}", name="blogUpvote")
+	 */
+	public function vote($id, $direction)
+	{
+		$entityManager = $this->getDoctrine()->getManager();
+		$postToUpvote = $entityManager->getRepository(Post::class)->find($id);
+
+		if ($direction === 'true') {
+			$postToUpvote->setVotes($postToUpvote->getVotes() + 1);
+		} elseif($direction === 'false') {
+			$postToUpvote->setVotes($postToUpvote->getVotes() - 1);
+		}
+
+		$entityManager->persist($postToUpvote);
+		$entityManager->flush();
+
+		return new JsonResponse($postToUpvote->getVotes() . ' votes');
 	}
 }

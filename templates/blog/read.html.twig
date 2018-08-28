@@ -8,7 +8,10 @@
             {% endif %}
         </h1>
         <div class="page-options d-flex row">
-            <a href="/blog/delete/{{ post.id }}" class="btn btn-sm btn-outline-danger">Delete</a>
+            {% if post.user == user %} <!-- todo: zorg er voor dat alleen de auteur dit mag zien -->
+                    <a href="/blog/delete/{{ post.id }}" class="btn btn-sm btn-outline-danger">Delete</a>
+            {% endif %}
+        {% include('voteblock.html.twig') %}
         </div>
     </div>
     <div class="row row-cards row-deck">
@@ -19,6 +22,4 @@
         </div>
     </div>
 {% endblock %}
-{% block javascripts %}
-
-{% endblock %}
+{% block javascripts %}{% endblock %}

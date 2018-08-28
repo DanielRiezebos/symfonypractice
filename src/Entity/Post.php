@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,16 @@ class Post
      * @ORM\Column(type="integer")
      */
     private $timestamp;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\VoteRecord", mappedBy="Post")
+     */
+    private $voteRecords;
+
+    public function __construct()
+    {
+        $this->voteRecords = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -103,6 +115,37 @@ class Post
     public function setTimestamp(int $timestamp): self
     {
         $this->timestamp = $timestamp;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|VoteRecord[]
+     */
+    public function getVoteRecords(): Collection
+    {
+        return $this->voteRecords;
+    }
+
+    public function addVoteRecord(VoteRecord $voteRecord): self
+    {
+        if (!$this->voteRecords->contains($voteRecord)) {
+            $this->voteRecords[] = $voteRecord;
+            $voteRecord->setPost($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVoteRecord(VoteRecord $voteRecord): self
+    {
+        if ($this->voteRecords->contains($voteRecord)) {
+            $this->voteRecords->removeElement($voteRecord);
+            // set the owning side to null (unless already changed)
+            if ($voteRecord->getPost() === $this) {
+                $voteRecord->setPost(null);
+            }
+        }
 
         return $this;
     }

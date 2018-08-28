@@ -1,0 +1,7 @@
+{% if app.user %}
+    <div id="vote-block-{{ post.id }}">
+        <h3 class="card-title">{{ post.votes }} votes</h3>
+        <button onclick="vote({{ post.id }}, true)" class="btn btn-outline-success">↑</button>
+        <button onclick="vote({{ post.id }}, false)" class="btn btn-outline-danger">↓</button>
+    </div>
+{% endif %}
